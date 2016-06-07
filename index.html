@@ -1,15 +1,140 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/css/reset.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.css">
     <script src="https://cdn.mxpnl.com/libs/mixpanel-platform/build/mixpanel-platform.v0.latest.min.js"></script>
   </head>
   <body class="mixpanel-platform-body">
-    <h1>Hello, World!</h1>
+    <div class="mixpanel-platform-section">
+      <div id="eventSelect" style="float: left;"></div>
+      <div id="by" class="mixpanel-platform-label" style="margin-left: 10px; display: none;">by</div>
+      <div id="propSelect" style="float: left;"></div>
+      <div id="dateSelect" style="float: right;"></div>
+      <div style="clear: both;"></div>
+      <div id="graph"></div>
+    </div>
+    <div id="table"></div>
+
+     <script>
+    // Setting up shop
+    // MP.api.setCredentials('c8e2af5a88f5b4aa174d946ba7866371', '53842f456486db76e0ef4986cc105416');
+
+    </script>
+
     <script>
-      // Run queries and display results here
+    var dateSelect  = $('#dateSelect').MPDatepicker();
+    var runQuery = function() {
+    /*  First Chart */
+  
+        var date_from;
+        var date_to;
+        var dateRange = dateSelect.MPDatepicker('value');
+        
+        if(typeof dateRange == "undefined") {
+          var date_from = moment().subtract(1, 'month');
+          var date_to = moment();
+        } else {
+          var date_from = dateRange.from.toISOString().substring(0, 10);
+          var date_to = dateRange.to.toISOString().substring(0, 10);
+        }
+
+   
+        /*  First Chart */
+      
+        var first_chart = MP.api.query('/api/2.0/formulas/', {
+            formulas: [{"queries": [{"events": ["$custom_event:175747"], "count_type": "general", "selector": "not \"stridehealth\" in user[\"$email\"]"}, {"events": ["$custom_event:175745"], "count_type": "unique"}], "formula": "(A)/(B)"}],
+            from: date_from,
+            to: date_to,
+            unit: 'day',
+            //'where': '(string(properties["Stroll Employee"]) == "No")',
+
+        }, {dataType: 'json'});
+        console.log(first_chart['data'])
+     
+        var second_chart = MP.api.query('/api/2.0/formulas/', {
+            formulas: [{"queries": [{"events": ["$custom_event:175789"], "count_type": "general", "selector": "not \"stridehealth\" in user[\"$email\"]"}, {"events": ["$custom_event:175747"], "count_type": "unique"}], "formula": "(A)/(B)"}],
+            from: date_from,
+            to: date_to,
+            unit: 'day',
+            //'where': '(string(properties["Stroll Employee"]) == "No")',
+
+        }, {dataType: 'json'});
+        console.log(second_chart['data'])
+       
+       
+        var third_chart = MP.api.query('/api/2.0/formulas/', {
+            formulas: [{"queries": [{"events": ["$custom_event:181843"], "count_type": "general", "selector": "not \"stridehealth\" in user[\"$email\"]"}, {"events": ["$custom_event:175789"], "count_type": "unique"}], "formula": "(A)/(B)"}],
+            from: date_from,
+            to: date_to,
+            unit: 'day',
+            //'where': '(string(properties["Stroll Employee"]) == "No")',
+
+        }, {dataType: 'json'});
+        console.log(third_chart['data'])
+        
+        var fourth_chart = MP.api.query('/api/2.0/formulas/', {
+            formulas: [{"queries": [{"events": ["Purchase Complete"], "count_type": "general", "selector": "not \"stridehealth\" in user[\"$email\"]"}, {"events": ["$custom_event:181843"], "count_type": "unique"}], "formula": "(A)/(B)"}],
+            from: date_from,
+            to: date_to,
+            unit: 'day',
+            //'where': '(string(properties["Stroll Employee"]) == "No")',
+
+        }, {dataType: 'json'});
+        console.log(fourth_chart['data'])
+        
+        $.when(first_chart, second_chart, third_chart, fourth_chart).done(function(first_chart, second_chart, third_chart, fourth_chart) {
+            
+           
+            
+            var drawGraph = function(firstChartData, secondChartData, thirdChartData, fourthChartData){
+          
+                $('<div class="first"></div>').css({'width':'460px', 'float':'left'}).appendTo('body').MPChart({
+                    chartType: 'line',
+                    data: firstChartData,
+                    highchartsOptions : {title: {text:"BOR Identity / BOR Insurance"}}
+                });
+                
+                $('<div class="second"></div>').css({'width':'460px', 'float':'right'}).appendTo('body').MPChart({
+                    chartType: 'line',
+                    data: secondChartData, 
+                    highchartsOptions : {title: {text:"BOR eSign / BOR Identity"}}
+                });
+                
+                $('<div class="third"></div>').css({'width':'460px', 'float':'left'}).appendTo('body').MPChart({
+                    chartType: 'line',
+                    data: thirdChartData, 
+                    highchartsOptions : {title: {text:"BOR Account / BOR eSign"}}
+                });
+                
+                $('<div class="fourth"></div>').css({'width':'460px', 'float':'right'}).appendTo('body').MPChart({
+                    chartType: 'line',
+                    data: fourthChartData, 
+                    highchartsOptions : {title: {text:"Purchase Complete / BOR Account"}}
+                });
+                //$('.mixpanel-platform-multi_selector').css({'clear':'both'});
+                //$('.title').css({'width':'55px'});
+                $('.color_toggle_dropdown').each(function(){this.style.setProperty('width', '170px', 'important')});
+                $('.title').each(function(){this.style.setProperty('width', '105px', 'important')});
+                
+            }
+            
+            
+            drawGraph(first_chart['data']['values'], second_chart['data']['values'], third_chart['data']['values'], fourth_chart['data']['values']);
+            
+        });
+     };
+
+        dateSelect.on('change', function(dateRange){
+            $(".first").empty();
+            $(".second").empty();
+            $(".third").empty();
+            $(".fourth").empty();
+            runQuery();
+      });
+      
+      runQuery();
+
     </script>
   </body>
 </html>
