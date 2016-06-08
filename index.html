@@ -46,8 +46,9 @@
           formulas: [{"[{"queries": [{"events": ["Purchase Complete"], "count_type": "general"}, {"events": ["$custom_event:175745"], "count_type": "general"}], "formula": "(A)/(B)"}]"}],
           from: date_from,
           to: date_to,
-          unit: 'week'
+          unit: 'week',
         }, {dataType: 'json'});
+        console.log(overall_ratio['data'])
       
         var first_chart = MP.api.query('/api/2.0/formulas/', {
             formulas: [{"queries": [{"events": ["$custom_event:175747"], "count_type": "general", "selector": "not \"stridehealth\" in user[\"$email\"]"}, {"events": ["$custom_event:175745"], "count_type": "unique"}], "formula": "(A)/(B)"}],
