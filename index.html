@@ -55,7 +55,7 @@
             formulas: [{"queries": [{"events": ["$custom_event:175747"], "count_type": "general", "selector": "not \"stridehealth\" in user[\"$email\"]"}, {"events": ["$custom_event:175745"], "count_type": "unique"}], "formula": "(A)/(B)"}],
             from: date_from,
             to: date_to,
-            unit: 'day',
+            unit: 'week',
             //'where': '(string(properties["Stroll Employee"]) == "No")',
 
         }, {dataType: 'json'});
@@ -65,7 +65,7 @@
             formulas: [{"queries": [{"events": ["$custom_event:175789"], "count_type": "general", "selector": "not \"stridehealth\" in user[\"$email\"]"}, {"events": ["$custom_event:175747"], "count_type": "unique"}], "formula": "(A)/(B)"}],
             from: date_from,
             to: date_to,
-            unit: 'day',
+            unit: 'week',
             //'where': '(string(properties["Stroll Employee"]) == "No")',
 
         }, {dataType: 'json'});
@@ -76,7 +76,7 @@
             formulas: [{"queries": [{"events": ["$custom_event:181843"], "count_type": "general", "selector": "not \"stridehealth\" in user[\"$email\"]"}, {"events": ["$custom_event:175789"], "count_type": "unique"}], "formula": "(A)/(B)"}],
             from: date_from,
             to: date_to,
-            unit: 'day',
+            unit: 'week',
             //'where': '(string(properties["Stroll Employee"]) == "No")',
 
         }, {dataType: 'json'});
@@ -86,7 +86,7 @@
             formulas: [{"queries": [{"events": ["Purchase Complete"], "count_type": "general", "selector": "not \"stridehealth\" in user[\"$email\"]"}, {"events": ["$custom_event:181843"], "count_type": "unique"}], "formula": "(A)/(B)"}],
             from: date_from,
             to: date_to,
-            unit: 'day',
+            unit: 'week',
             //'where': '(string(properties["Stroll Employee"]) == "No")',
 
         }, {dataType: 'json'});
