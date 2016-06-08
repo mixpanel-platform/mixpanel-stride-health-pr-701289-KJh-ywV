@@ -18,7 +18,7 @@
 
      <script>
     // Setting up shop
-    // MP.api.setCredentials('c8e2af5a88f5b4aa174d946ba7866371', '53842f456486db76e0ef4986cc105416');
+    MP.api.setCredentials('c8e2af5a88f5b4aa174d946ba7866371', '53842f456486db76e0ef4986cc105416');
 
     </script>
 
@@ -41,20 +41,21 @@
 
    
         /*  First Chart */
-        
-        var overall_ratio = MP.api.query('/api/2.0/formulas/', {
-          formulas: [{"[{"queries": [{"events": ["Purchase Complete"], "count_type": "general"}, {"events": ["$custom_event:175745"], "count_type": "general"}], "formula": "(A)/(B)"}]"}],
-          from: date_from,
-          to: date_to,
-          unit: 'week',
+
+       var overall_ratio = MP.api.query('/api/2.0/formulas/', {
+            formulas: [{"queries": [{"events": ["Purchase Complete"], "count_type": "general"}, {"events": ["$custom_event:175745"], "count_type": "general"}], "formula": "(A)/(B)"}],
+            from: date_from,
+            to: date_to,
+            unit: 'week',
+            //'where': '(string(properties["Stroll Employee"]) == "No")',
+
         }, {dataType: 'json'});
-        console.log(overall_ratio['data'])
       
         var first_chart = MP.api.query('/api/2.0/formulas/', {
             formulas: [{"queries": [{"events": ["$custom_event:175747"], "count_type": "general", "selector": "not \"stridehealth\" in user[\"$email\"]"}, {"events": ["$custom_event:175745"], "count_type": "unique"}], "formula": "(A)/(B)"}],
             from: date_from,
             to: date_to,
-            unit: 'week',
+            unit: 'day',
             //'where': '(string(properties["Stroll Employee"]) == "No")',
 
         }, {dataType: 'json'});
@@ -64,7 +65,7 @@
             formulas: [{"queries": [{"events": ["$custom_event:175789"], "count_type": "general", "selector": "not \"stridehealth\" in user[\"$email\"]"}, {"events": ["$custom_event:175747"], "count_type": "unique"}], "formula": "(A)/(B)"}],
             from: date_from,
             to: date_to,
-            unit: 'week',
+            unit: 'day',
             //'where': '(string(properties["Stroll Employee"]) == "No")',
 
         }, {dataType: 'json'});
@@ -75,7 +76,7 @@
             formulas: [{"queries": [{"events": ["$custom_event:181843"], "count_type": "general", "selector": "not \"stridehealth\" in user[\"$email\"]"}, {"events": ["$custom_event:175789"], "count_type": "unique"}], "formula": "(A)/(B)"}],
             from: date_from,
             to: date_to,
-            unit: 'week',
+            unit: 'day',
             //'where': '(string(properties["Stroll Employee"]) == "No")',
 
         }, {dataType: 'json'});
@@ -85,7 +86,7 @@
             formulas: [{"queries": [{"events": ["Purchase Complete"], "count_type": "general", "selector": "not \"stridehealth\" in user[\"$email\"]"}, {"events": ["$custom_event:181843"], "count_type": "unique"}], "formula": "(A)/(B)"}],
             from: date_from,
             to: date_to,
-            unit: 'week',
+            unit: 'day',
             //'where': '(string(properties["Stroll Employee"]) == "No")',
 
         }, {dataType: 'json'});
@@ -95,14 +96,15 @@
             
            
             
-            var drawGraph = function(overall_ratioData, firstChartData, secondChartData, thirdChartData, fourthChartData){
+            var drawGraph = function(overallRatioData, firstChartData, secondChartData, thirdChartData, fourthChartData){
           
+                
                 $('<div class="overall"></div>').css({'width':'460px', 'float':'left'}).appendTo('body').MPChart({
                     chartType: 'line',
-                    data: overall_ratioData,
-                    highchartsOptions : {title: {text:"BOR Insurance --> BOR Identity"}}
+                    data: overallRatioData,
+                    highchartsOptions : {title: {text:"Overall Ratio (BOR Insurance --> Purchase Complete"}}
                 });
-                
+
                 $('<div class="first"></div>').css({'width':'460px', 'float':'left'}).appendTo('body').MPChart({
                     chartType: 'line',
                     data: firstChartData,
