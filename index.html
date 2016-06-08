@@ -41,6 +41,13 @@
 
    
         /*  First Chart */
+        
+        var overall_ratio = MP.api.query('/api/2.0/formulas/', {
+          formulas: [{"[{"queries": [{"events": ["Purchase Complete"], "count_type": "general"}, {"events": ["$custom_event:175745"], "count_type": "general"}], "formula": "(A)/(B)"}]"}],
+          from: date_from,
+          to: date_to,
+          unit: 'week'
+        }, {dataType: 'json'});
       
         var first_chart = MP.api.query('/api/2.0/formulas/', {
             formulas: [{"queries": [{"events": ["$custom_event:175747"], "count_type": "general", "selector": "not \"stridehealth\" in user[\"$email\"]"}, {"events": ["$custom_event:175745"], "count_type": "unique"}], "formula": "(A)/(B)"}],
@@ -83,12 +90,18 @@
         }, {dataType: 'json'});
         console.log(fourth_chart['data'])
         
-        $.when(first_chart, second_chart, third_chart, fourth_chart).done(function(first_chart, second_chart, third_chart, fourth_chart) {
+        $.when(overall_ratio, first_chart, second_chart, third_chart, fourth_chart).done(function(overall_ratio, first_chart, second_chart, third_chart, fourth_chart) {
             
            
             
-            var drawGraph = function(firstChartData, secondChartData, thirdChartData, fourthChartData){
+            var drawGraph = function(overall_ratioData, firstChartData, secondChartData, thirdChartData, fourthChartData){
           
+                $('<div class="overall"></div>').css({'width':'460px', 'float':'left'}).appendTo('body').MPChart({
+                    chartType: 'line',
+                    data: overall_ratioData,
+                    highchartsOptions : {title: {text:"BOR Insurance --> BOR Identity"}}
+                });
+                
                 $('<div class="first"></div>').css({'width':'460px', 'float':'left'}).appendTo('body').MPChart({
                     chartType: 'line',
                     data: firstChartData,
@@ -120,12 +133,13 @@
             }
             
             
-            drawGraph(first_chart['data']['values'], second_chart['data']['values'], third_chart['data']['values'], fourth_chart['data']['values']);
+            drawGraph(overall_ratio['data']['values'], first_chart['data']['values'], second_chart['data']['values'], third_chart['data']['values'], fourth_chart['data']['values']);
             
         });
      };
 
         dateSelect.on('change', function(dateRange){
+            $(".overall").empty();
             $(".first").empty();
             $(".second").empty();
             $(".third").empty();
